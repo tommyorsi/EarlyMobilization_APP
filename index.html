@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <title>Early Mobilization Patient Evaluation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .criterion-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-left: 4px solid #0056b3;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .sub-question {
+            margin-left: 15px;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #ddd;
+        }
+        .sub-item {
+            margin-bottom: 12px;
+        }
+        /* Choice Button Styles */
+        .choice-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+        .choice-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .choice-btn:hover {
+            border-color: #0056b3;
+        }
+        .choice-btn.selected {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+        
+        #submit-btn {
+            display: block;
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #submit-btn:hover {
+            background-color: #218838;
+        }
+        #result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+        }
+        .contraindicated {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .cleared {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Physician Referral Criteria for Early Mobilization</h1>
+    <p>Answer the questions below about your patient:</p>
+
+    <form id="evaluationForm">
+        <!-- Criterion 1 -->
+        <div class="criterion-group">
+            <label>1. Is he/she alert, conscious and obeying commands?</label>
+            <div class="choice-group" data-name="c1">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c1')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c1')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 2 -->
+        <div class="criterion-group">
+            <label>2. Did he/she have hypoglycemic episode and/or diabetic ketoacidosis in the last 12 hours?</label>
+            <div class="choice-group" data-name="c2">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c2')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c2')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 3 -->
+        <div class="criterion-group">
+            <label>3. Did he/she have signs of decompensated pulmonary edema in the last 24 hours?</label>
+            <div class="choice-group" data-name="c3">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c3')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c3')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 4 -->
+        <div class="criterion-group">
+            <label>4. Did he/she have unstable and/or uncontrolled arrhythmias (atrial flutter/atrial fibrillation/ventricular tachycardia) in the last 24 hours?</label>
+            <div class="choice-group" data-name="c4">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c4')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c4')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 5 -->
+        <div class="criterion-group">
+            <label>5. Did he/she have on-going ischemia in the last 24 hours?</label>
+            <div class="choice-group" data-name="c5">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c5')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c5')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 6 -->
+        <div class="criterion-group">
+            <label>6. Did he/she have new onset of angina in the last 12 hours?</label>
+            <div class="choice-group" data-name="c6">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c6')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c6')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 7 -->
+        <div class="criterion-group">
+            <label>7. Does he/she have persistent symptomatic postural hypotension?</label>
+            <div class="choice-group" data-name="c7">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c7')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c7')">NO</button>
+            </div>
+        </div>
+
+        <!-- Criterion 8 -->
+        <div class="criterion-group">
+            <label>8. Hemodynamic Vitals & Medications:</label>
+            <label>Resting Heart Rate (bpm):</label>
+            <input type="number" id="hr" step="1" required placeholder="e.g. 75">
+
+            <label>Systolic Blood Pressure (mmHg):</label>
+            <input type="number" id="sbp" step="1" required placeholder="e.g. 120">
+
+            <label>Mean Arterial Pressure (mmHg):</label>
+            <input type="number" id="map" step="1" required placeholder="e.g. 85">
+
+            <label>Noradrenaline (microgram/kg/min):</label>
+            <input type="number" id="nor" step="0.01" required placeholder="e.g. 0.1">
+
+            <label>Dopamine/Dobutamine (microgram/kg/min):</label>
+            <input type="number" id="dop" step="0.1" required placeholder="e.g. 2.0">
+        </div>
+
+        <!-- Criterion 9 -->
+        <div class="criterion-group">
+            <label>9. Respiratory Parameters:</label>
+            <label>SpO2 (%):</label>
+            <input type="number" id="sp02" step="1" required placeholder="e.g. 96">
+
+            <label>Respiratory Rate (breaths/min):</label>
+            <input type="number" id="rr" step="1" required placeholder="e.g. 18">
+        </div>
+
+        <!-- Criterion 10 -->
+        <div class="criterion-group">
+            <label>10. Fluid Overload Signs (Last 24 Hours):</label>
+            <div class="sub-question">
+                <div class="sub-item">
+                    <label>Increased pedal edema?</label>
+                    <div class="choice-group" data-name="c10_pedal">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_pedal')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_pedal')">NO</button>
+                    </div>
+                </div>
+                <div class="sub-item">
+                    <label>Increased jugular venous pressure (JVP)?</label>
+                    <div class="choice-group" data-name="c10_jvp">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_jvp')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_jvp')">NO</button>
+                    </div>
+                </div>
+                <div class="sub-item">
+                    <label>Weight gain of >1.8 kg?</label>
+                    <div class="choice-group" data-name="c10_weight">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_weight')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_weight')">NO</button>
+                    </div>
+                </div>
+                <div class="sub-item">
+                    <label>Increased abdominal distension?</label>
+                    <div class="choice-group" data-name="c10_abd">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_abd')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_abd')">NO</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Criterion 11 -->
+        <div class="criterion-group">
+            <label>11. Laboratory Values:</label>
+            <label>Hemoglobin (mg/dl):</label>
+            <input type="number" id="hb" step="0.1" required placeholder="e.g. 11.5">
+
+            <label>Potassium (mmol/L):</label>
+            <input type="number" id="k" step="0.1" required placeholder="e.g. 4.0">
+        </div>
+
+        <button type="button" id="submit-btn" onclick="evaluatePatient()">Evaluate Patient</button>
+    </form>
+
+    <div id="result-box">
+        <h3 id="result-title" style="margin-top:0;"></h3>
+        <div id="result-content"></div>
+    </div>
+</div>
+
+<script>
+    const selections = {};
+
+    function selectChoice(button, groupName) {
+        const groupContainer = button.parentElement;
+        const buttons = groupContainer.querySelectorAll('.choice-btn');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        button.classList.add('selected');
+        selections[groupName] = parseInt(button.getAttribute('data-value'));
+    }
+
+    function evaluatePatient() {
+        const requiredGroups = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c10_pedal', 'c10_jvp', 'c10_weight', 'c10_abd'];
+        
+        for (let group of requiredGroups) {
+            if (selections[group] === undefined) {
+                alert("Please answer all questions before evaluating.");
+                return;
+            }
+        }
+
+        const hrInput = document.getElementById('hr').value;
+        const sbpInput = document.getElementById('sbp').value;
+        const mapInput = document.getElementById('map').value;
+        const norInput = document.getElementById('nor').value;
+        const dopInput = document.getElementById('dop').value;
+        const sp02Input = document.getElementById('sp02').value;
+        const rrInput = document.getElementById('rr').value;
+        const hbInput = document.getElementById('hb').value;
+        const kInput = document.getElementById('k').value;
+
+        if (!hrInput || !sbpInput || !mapInput || !norInput || !dopInput || !sp02Input || !rrInput || !hbInput || !kInput) {
+            alert("Please fill in all numerical vital signs and lab values.");
+            return;
+        }
+
+        let c1 = selections["c1"] === 0 ? 1 : 0;
+        let c2 = selections["c2"];
+        let c3 = selections["c3"];
+        let c4 = selections["c4"];
+        let c5 = selections["c5"];
+        let c6 = selections["c6"];
+        let c7 = selections["c7"];
+
+        let hr = parseFloat(hrInput);
+        let sbp = parseFloat(sbpInput);
+        let map = parseFloat(mapInput);
+        let nor = parseFloat(norInput);
+        let dop = parseFloat(dopInput);
+
+        let c8 = (hr < 60 || hr > 130 || sbp <= 90 || map < 60 || map > 100 || nor >= 0.25 || dop >= 5) ? 1 : 0;
+
+        let sp02 = parseFloat(sp02Input);
+        let rr = parseFloat(rrInput);
+        let c9 = (sp02 < 90 || rr >= 30) ? 1 : 0;
+
+        let c10 = (
+            selections["c10_pedal"] === 1 ||
+            selections["c10_jvp"] === 1 ||
+            selections["c10_weight"] === 1 ||
+            selections["c10_abd"] === 1
+        ) ? 1 : 0;
+
+        let hb = parseFloat(hbInput);
+        let k = parseFloat(kInput);
+        let c11 = (hb <= 7 || k < 3.5 || k > 5.5) ? 1 : 0;
+
+        let reasons = [];
+
+        if (c1) reasons.push("<li><b>CRITERION 1:</b> Patient is not alert/conscious/obeying commands (selected NO, correct answer YES)</li>");
+        if (c2) reasons.push("<li><b>CRITERION 2:</b> Hypoglycemic episode and/or DKA in the last 12 hours</li>");
+        if (c3) reasons.push("<li><b>CRITERION 3:</b> Signs of decompensated pulmonary edema in the last 24 hours</li>");
+        if (c4) reasons.push("<li><b>CRITERION 4:</b> Unstable/uncontrolled arrhythmias in the last 24 hours</li>");
+        if (c5) reasons.push("<li><b>CRITERION 5:</b> On-going ischemia in the last 24 hours</li>");
+        if (c6) reasons.push("<li><b>CRITERION 6:</b> New onset of angina in the last 12 hours</li>");
+        if (c7) reasons.push("<li><b>CRITERION 7:</b> Persistent symptomatic postural hypotension</li>");
+
+        if (c8) {
+            let subReasons = [];
+            if (hr < 60 || hr > 130) subReasons.push(`Resting Heart Rate: ${hr} bpm (cut-off: 60-130 bpm)`);
+            if (sbp <= 90) subReasons.push(`Systolic Blood Pressure: ${sbp} mmHg (cut-off: >90 mmHg)`);
+            if (map < 60 || map > 100) subReasons.push(`Mean Arterial Pressure: ${map} mmHg (cut-off: 60-100 mmHg)`);
+            if (nor >= 0.25) subReasons.push(`Noradrenaline: ${nor.toFixed(2)} microgram/kg/min (cut-off: <0.25)`);
+            if (dop >= 5) subReasons.push(`Dopamine/Dobutamine: ${dop.toFixed(2)} microgram/kg/min (cut-off: <5)`);
+            reasons.push(`<li><b>CRITERION 8 Vitals out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        if (c9) {
+            let subReasons = [];
+            if (sp02 < 90) subReasons.push(`SpO2: ${sp02}% (cut-off: >90%)`);
+            if (rr >= 30) subReasons.push(`Respiratory Rate: ${rr} breaths/min (cut-off: <30)`);
+            reasons.push(`<li><b>CRITERION 9 Respiratory parameters out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        if (c10) reasons.push("<li><b>CRITERION 10:</b> Signs of fluid overload detected</li>");
+
+        if (c11) {
+            let subReasons = [];
+            if (hb <= 7) subReasons.push(`Hemoglobin: ${hb.toFixed(2)} mg/dl (cut-off: >7 mg/dl)`);
+            if (k < 3.5 || k > 5.5) subReasons.push(`Potassium: ${k.toFixed(2)} mmol/L (cut-off: 3.5-5.5 mmol/L)`);
+            reasons.push(`<li><b>CRITERION 11 Lab values out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        const resultBox = document.getElementById('result-box');
+        const resultTitle = document.getElementById('result-title');
+        const resultContent = document.getElementById('result-content');
+
+        resultBox.style.display = "block";
+
+        if (c1 || c2 || c3 || c4 || c5 || c6 || c7 || c8 || c9 || c10 || c11) {
+            resultBox.className = "contraindicated";
+            resultTitle.textContent = "CONTRAINDICATIONS: You can't proceed to Early Mobilization";
+            resultContent.innerHTML = "<p><strong>Reason(s):</strong></p><ul>" + reasons.join('') + "</ul>";
+        } else {
+            resultBox.className = "cleared";
+            resultTitle.textContent = "All criteria passed! Patient is cleared for Early Mobilization.";
+            resultContent.innerHTML = "";
+        }
+        
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
