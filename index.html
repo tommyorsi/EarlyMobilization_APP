@@ -33,6 +33,11 @@
             background: #fafafa;
             border-left: 4px solid #0056b3;
             border-radius: 4px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .criterion-group.error-highlight {
+            border-left-color: #dc3545;
+            background-color: #fff8f8;
         }
         label {
             display: block;
@@ -43,10 +48,23 @@
             width: 100%;
             padding: 8px;
             margin-top: 5px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input[type="number"].error-input {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 2px;
+            margin-bottom: 10px;
+            display: none;
         }
         .sub-question {
             margin-left: 15px;
@@ -62,7 +80,7 @@
             display: flex;
             gap: 10px;
             margin-top: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 4px;
         }
         .choice-btn {
             flex: 1;
@@ -85,9 +103,13 @@
             border-color: #0056b3;
         }
         
-        #submit-btn {
-            display: block;
-            width: 100%;
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            flex: 2;
             background-color: #28a745;
             color: white;
             padding: 14px;
@@ -96,10 +118,23 @@
             font-size: 16px;
             cursor: pointer;
             font-weight: bold;
-            margin-top: 20px;
         }
-        #submit-btn:hover {
+        .btn-primary:hover {
             background-color: #218838;
+        }
+        .btn-secondary {
+            flex: 1;
+            background-color: #6c757d;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
         }
         #result-box {
             margin-top: 25px;
@@ -134,99 +169,115 @@
 
     <form id="evaluationForm">
         <!-- Criterion 1 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c1">
             <label>1. Is he/she alert, conscious and obeying commands?</label>
             <div class="choice-group" data-name="c1">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c1')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c1')">NO</button>
             </div>
+            <div class="error-message" id="err-c1">Please select an option.</div>
         </div>
 
         <!-- Criterion 2 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c2">
             <label>2. Did he/she have hypoglycemic episode and/or diabetic ketoacidosis in the last 12 hours?</label>
             <div class="choice-group" data-name="c2">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c2')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c2')">NO</button>
             </div>
+            <div class="error-message" id="err-c2">Please select an option.</div>
         </div>
 
         <!-- Criterion 3 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c3">
             <label>3. Did he/she have signs of decompensated pulmonary edema in the last 24 hours?</label>
             <div class="choice-group" data-name="c3">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c3')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c3')">NO</button>
             </div>
+            <div class="error-message" id="err-c3">Please select an option.</div>
         </div>
 
         <!-- Criterion 4 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c4">
             <label>4. Did he/she have unstable and/or uncontrolled arrhythmias (atrial flutter/atrial fibrillation/ventricular tachycardia) in the last 24 hours?</label>
             <div class="choice-group" data-name="c4">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c4')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c4')">NO</button>
             </div>
+            <div class="error-message" id="err-c4">Please select an option.</div>
         </div>
 
         <!-- Criterion 5 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c5">
             <label>5. Did he/she have on-going ischemia in the last 24 hours?</label>
             <div class="choice-group" data-name="c5">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c5')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c5')">NO</button>
             </div>
+            <div class="error-message" id="err-c5">Please select an option.</div>
         </div>
 
         <!-- Criterion 6 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c6">
             <label>6. Did he/she have new onset of angina in the last 12 hours?</label>
             <div class="choice-group" data-name="c6">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c6')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c6')">NO</button>
             </div>
+            <div class="error-message" id="err-c6">Please select an option.</div>
         </div>
 
         <!-- Criterion 7 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c7">
             <label>7. Does he/she have persistent symptomatic postural hypotension?</label>
             <div class="choice-group" data-name="c7">
                 <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c7')">YES</button>
                 <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c7')">NO</button>
             </div>
+            <div class="error-message" id="err-c7">Please select an option.</div>
         </div>
 
         <!-- Criterion 8 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c8">
             <label>8. Hemodynamic Vitals & Medications:</label>
+            
             <label>Resting Heart Rate (bpm):</label>
-            <input type="number" id="hr" step="1" required placeholder="e.g. 75">
+            <input type="number" id="hr" step="1" placeholder="e.g. 75">
+            <div class="error-message" id="err-hr">Please fill in this value.</div>
 
             <label>Systolic Blood Pressure (mmHg):</label>
-            <input type="number" id="sbp" step="1" required placeholder="e.g. 120">
+            <input type="number" id="sbp" step="1" placeholder="e.g. 120">
+            <div class="error-message" id="err-sbp">Please fill in this value.</div>
 
             <label>Mean Arterial Pressure (mmHg):</label>
-            <input type="number" id="map" step="1" required placeholder="e.g. 85">
+            <input type="number" id="map" step="1" placeholder="e.g. 85">
+            <div class="error-message" id="err-map">Please fill in this value.</div>
 
             <label>Noradrenaline (microgram/kg/min):</label>
-            <input type="number" id="nor" step="0.01" required placeholder="e.g. 0.1">
+            <input type="number" id="nor" step="0.01" placeholder="e.g. 0.1">
+            <div class="error-message" id="err-nor">Please fill in this value.</div>
 
             <label>Dopamine/Dobutamine (microgram/kg/min):</label>
-            <input type="number" id="dop" step="0.1" required placeholder="e.g. 2.0">
+            <input type="number" id="dop" step="0.1" placeholder="e.g. 2.0">
+            <div class="error-message" id="err-dop">Please fill in this value.</div>
         </div>
 
         <!-- Criterion 9 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c9">
             <label>9. Respiratory Parameters:</label>
+            
             <label>SpO2 (%):</label>
-            <input type="number" id="sp02" step="1" required placeholder="e.g. 96">
+            <input type="number" id="sp02" step="1" placeholder="e.g. 96">
+            <div class="error-message" id="err-sp02">Please fill in this value.</div>
 
             <label>Respiratory Rate (breaths/min):</label>
-            <input type="number" id="rr" step="1" required placeholder="e.g. 18">
+            <input type="number" id="rr" step="1" placeholder="e.g. 18">
+            <div class="error-message" id="err-rr">Please fill in this value.</div>
         </div>
 
         <!-- Criterion 10 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c10">
             <label>10. Fluid Overload Signs (Last 24 Hours):</label>
             <div class="sub-question">
                 <div class="sub-item">
@@ -235,6 +286,7 @@
                         <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_pedal')">YES</button>
                         <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_pedal')">NO</button>
                     </div>
+                    <div class="error-message" id="err-c10_pedal">Please select an option.</div>
                 </div>
                 <div class="sub-item">
                     <label>Increased jugular venous pressure (JVP)?</label>
@@ -242,6 +294,7 @@
                         <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_jvp')">YES</button>
                         <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_jvp')">NO</button>
                     </div>
+                    <div class="error-message" id="err-c10_jvp">Please select an option.</div>
                 </div>
                 <div class="sub-item">
                     <label>Weight gain of >1.8 kg?</label>
@@ -249,6 +302,7 @@
                         <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_weight')">YES</button>
                         <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_weight')">NO</button>
                     </div>
+                    <div class="error-message" id="err-c10_weight">Please select an option.</div>
                 </div>
                 <div class="sub-item">
                     <label>Increased abdominal distension?</label>
@@ -256,21 +310,28 @@
                         <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_abd')">YES</button>
                         <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_abd')">NO</button>
                     </div>
+                    <div class="error-message" id="err-c10_abd">Please select an option.</div>
                 </div>
             </div>
         </div>
 
         <!-- Criterion 11 -->
-        <div class="criterion-group">
+        <div class="criterion-group" id="group-c11">
             <label>11. Laboratory Values:</label>
+            
             <label>Hemoglobin (mg/dl):</label>
-            <input type="number" id="hb" step="0.1" required placeholder="e.g. 11.5">
+            <input type="number" id="hb" step="0.1" placeholder="e.g. 11.5">
+            <div class="error-message" id="err-hb">Please fill in this value.</div>
 
             <label>Potassium (mmol/L):</label>
-            <input type="number" id="k" step="0.1" required placeholder="e.g. 4.0">
+            <input type="number" id="k" step="0.1" placeholder="e.g. 4.0">
+            <div class="error-message" id="err-k">Please fill in this value.</div>
         </div>
 
-        <button type="button" id="submit-btn" onclick="evaluatePatient()">Evaluate Patient</button>
+        <div class="action-buttons">
+            <button type="button" class="btn-primary" onclick="evaluatePatient()">Evaluate Patient</button>
+            <button type="button" class="btn-secondary" onclick="resetEvaluation()">New Evaluation</button>
+        </div>
     </form>
 
     <div id="result-box">
@@ -280,7 +341,7 @@
 </div>
 
 <script>
-    const selections = {};
+    let selections = {};
 
     function selectChoice(button, groupName) {
         const groupContainer = button.parentElement;
@@ -289,30 +350,95 @@
 
         button.classList.add('selected');
         selections[groupName] = parseInt(button.getAttribute('data-value'));
+
+        // Remove error styling and message for this choice group
+        const parentGroup = groupContainer.closest('.criterion-group');
+        if (parentGroup) {
+            parentGroup.classList.remove('error-highlight');
+        }
+        const errEl = document.getElementById(`err-${groupName}`);
+        if (errEl) {
+            errEl.style.display = 'none';
+        }
     }
 
+    // Clear error styling and message when text inputs change
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('input', function() {
+            if (this.value.trim() !== "") {
+                this.classList.remove('error-input');
+                const errEl = document.getElementById(`err-${this.id}`);
+                if (errEl) errEl.style.display = 'none';
+
+                // Check if all inputs inside parent group are filled to clear group highlight
+                const parentGroup = this.closest('.criterion-group');
+                if (parentGroup) {
+                    const inputsInGroup = parentGroup.querySelectorAll('input[type="number"]');
+                    let allFilled = true;
+                    inputsInGroup.forEach(inp => {
+                        if (!inp.value.trim()) allFilled = false;
+                    });
+                    if (allFilled) parentGroup.classList.remove('error-highlight');
+                }
+            }
+        });
+    });
+
     function evaluatePatient() {
-        const requiredGroups = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c10_pedal', 'c10_jvp', 'c10_weight', 'c10_abd'];
-        
-        for (let group of requiredGroups) {
+        // Clear all previous errors
+        document.querySelectorAll('.error-highlight').forEach(el => el.classList.remove('error-highlight'));
+        document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+        const choiceGroups = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c10_pedal', 'c10_jvp', 'c10_weight', 'c10_abd'];
+        let firstMissingElement = null;
+
+        // Check choice groups
+        for (let group of choiceGroups) {
             if (selections[group] === undefined) {
-                alert("Please answer all questions before evaluating.");
-                return;
+                let btnGroup = document.querySelector(`.choice-group[data-name="${group}"]`);
+                if (btnGroup) {
+                    let parentGroup = btnGroup.closest('.criterion-group');
+                    parentGroup.classList.add('error-highlight');
+                    
+                    let errEl = document.getElementById(`err-${group}`);
+                    if (errEl) errEl.style.display = 'block';
+
+                    if (!firstMissingElement) firstMissingElement = parentGroup;
+                }
             }
         }
 
-        const hrInput = document.getElementById('hr').value;
-        const sbpInput = document.getElementById('sbp').value;
-        const mapInput = document.getElementById('map').value;
-        const norInput = document.getElementById('nor').value;
-        const dopInput = document.getElementById('dop').value;
-        const sp02Input = document.getElementById('sp02').value;
-        const rrInput = document.getElementById('rr').value;
-        const hbInput = document.getElementById('hb').value;
-        const kInput = document.getElementById('k').value;
+        // Check numerical inputs
+        const numberInputs = [
+            { id: 'hr', group: 'group-c8' },
+            { id: 'sbp', group: 'group-c8' },
+            { id: 'map', group: 'group-c8' },
+            { id: 'nor', group: 'group-c8' },
+            { id: 'dop', group: 'group-c8' },
+            { id: 'sp02', group: 'group-c9' },
+            { id: 'rr', group: 'group-c9' },
+            { id: 'hb', group: 'group-c11' },
+            { id: 'k', group: 'group-c11' }
+        ];
 
-        if (!hrInput || !sbpInput || !mapInput || !norInput || !dopInput || !sp02Input || !rrInput || !hbInput || !kInput) {
-            alert("Please fill in all numerical vital signs and lab values.");
+        for (let item of numberInputs) {
+            let inputEl = document.getElementById(item.id);
+            if (!inputEl.value.trim()) {
+                inputEl.classList.add('error-input');
+                let parentGroup = document.getElementById(item.group);
+                parentGroup.classList.add('error-highlight');
+
+                let errEl = document.getElementById(`err-${item.id}`);
+                if (errEl) errEl.style.display = 'block';
+
+                if (!firstMissingElement) firstMissingElement = parentGroup;
+            }
+        }
+
+        // If any data is missing, scroll smoothly to the first missing element
+        if (firstMissingElement) {
+            firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             return;
         }
 
@@ -324,16 +450,16 @@
         let c6 = selections["c6"];
         let c7 = selections["c7"];
 
-        let hr = parseFloat(hrInput);
-        let sbp = parseFloat(sbpInput);
-        let map = parseFloat(mapInput);
-        let nor = parseFloat(norInput);
-        let dop = parseFloat(dopInput);
+        let hr = parseFloat(document.getElementById('hr').value);
+        let sbp = parseFloat(document.getElementById('sbp').value);
+        let map = parseFloat(document.getElementById('map').value);
+        let nor = parseFloat(document.getElementById('nor').value);
+        let dop = parseFloat(document.getElementById('dop').value);
 
         let c8 = (hr < 60 || hr > 130 || sbp <= 90 || map < 60 || map > 100 || nor >= 0.25 || dop >= 5) ? 1 : 0;
 
-        let sp02 = parseFloat(sp02Input);
-        let rr = parseFloat(rrInput);
+        let sp02 = parseFloat(document.getElementById('sp02').value);
+        let rr = parseFloat(document.getElementById('rr').value);
         let c9 = (sp02 < 90 || rr >= 30) ? 1 : 0;
 
         let c10 = (
@@ -343,8 +469,8 @@
             selections["c10_abd"] === 1
         ) ? 1 : 0;
 
-        let hb = parseFloat(hbInput);
-        let k = parseFloat(kInput);
+        let hb = parseFloat(document.getElementById('hb').value);
+        let k = parseFloat(document.getElementById('k').value);
         let c11 = (hb <= 7 || k < 3.5 || k > 5.5) ? 1 : 0;
 
         let reasons = [];
@@ -400,6 +526,25 @@
         }
         
         resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetEvaluation() {
+        // Clear all button selections
+        document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
+        // Clear all input fields
+        document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+        // Clear global selections object
+        for (let key in selections) {
+            delete selections[key];
+        }
+        // Remove error classes and hide error messages
+        document.querySelectorAll('.error-highlight').forEach(el => el.classList.remove('error-highlight'));
+        document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        // Hide result box
+        document.getElementById('result-box').style.display = 'none';
+        // Scroll back to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
