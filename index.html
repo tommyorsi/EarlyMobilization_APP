@@ -343,27 +343,13 @@
 <script>
     let selections = {};
 
-    function selectChoice(button, groupName) {
-        const groupContainer = button.parentElement;
-        const buttons = groupContainer.querySelectorAll('.choice-btn');
-        buttons.forEach(btn => btn.classList.remove('selected'));
-
-        button.classList.add('selected');
-        selections[groupName] = parseInt(button.getAttribute('data-value'));
-
-        // Remove error styling and message for this choice group
-        const parentGroup = groupContainer.closest('.criterion-group');
-        if (parentGroup) {
-            parentGroup.classList.remove('error-highlight');
-        }
-        const errEl = document.getElementById(`err-${groupName}`);
-        if (errEl) {
-            errEl.style.display = 'none';
-        }
-    }
-
-    // Clear error styling and message when text inputs change
+    // Disable mouse scroll wheel from changing number input values
     document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('wheel', function(event) {
+            event.preventDefault();
+        });
+
+        // Clear error styling and message when text inputs change
         input.addEventListener('input', function() {
             if (this.value.trim() !== "") {
                 this.classList.remove('error-input');
@@ -383,6 +369,25 @@
             }
         });
     });
+
+    function selectChoice(button, groupName) {
+        const groupContainer = button.parentElement;
+        const buttons = groupContainer.querySelectorAll('.choice-btn');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        button.classList.add('selected');
+        selections[groupName] = parseInt(button.getAttribute('data-value'));
+
+        // Remove error styling and message for this choice group
+        const parentGroup = groupContainer.closest('.criterion-group');
+        if (parentGroup) {
+            parentGroup.classList.remove('error-highlight');
+        }
+        const errEl = document.getElementById(`err-${groupName}`);
+        if (errEl) {
+            errEl.style.display = 'none';
+        }
+    }
 
     function evaluatePatient() {
         // Clear all previous errors
