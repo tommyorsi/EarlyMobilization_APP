@@ -44,7 +44,15 @@
             font-weight: bold;
             margin-bottom: 8px;
         }
+        
+        /* Remove up/down spin arrows for number inputs */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
         input[type="number"] {
+            -moz-appearance: textfield; /* Firefox */
             width: 100%;
             padding: 8px;
             margin-top: 5px;
@@ -54,6 +62,7 @@
             box-sizing: border-box;
             transition: border-color 0.3s ease;
         }
+
         input[type="number"].error-input {
             border-color: #dc3545;
             background-color: #fff8f8;
@@ -347,7 +356,7 @@
     document.querySelectorAll('input[type="number"]').forEach(input => {
         input.addEventListener('wheel', function(event) {
             event.preventDefault();
-        });
+        }, { passive: false });
 
         // Clear error styling and message when text inputs change
         input.addEventListener('input', function() {
