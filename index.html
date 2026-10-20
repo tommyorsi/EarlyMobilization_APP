@@ -255,23 +255,23 @@
             <label>8. Hemodynamic Vitals & Medications:</label>
             
             <label>Resting Heart Rate (bpm):</label>
-            <input type="number" id="hr" step="1" placeholder="e.g. 75">
+            <input type="number" id="hr" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 75">
             <div class="error-message" id="err-hr">Please fill in this value.</div>
 
             <label>Systolic Blood Pressure (mmHg):</label>
-            <input type="number" id="sbp" step="1" placeholder="e.g. 120">
+            <input type="number" id="sbp" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 120">
             <div class="error-message" id="err-sbp">Please fill in this value.</div>
 
             <label>Mean Arterial Pressure (mmHg):</label>
-            <input type="number" id="map" step="1" placeholder="e.g. 85">
+            <input type="number" id="map" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 85">
             <div class="error-message" id="err-map">Please fill in this value.</div>
 
             <label>Noradrenaline (microgram/kg/min):</label>
-            <input type="number" id="nor" step="0.01" placeholder="e.g. 0.1">
+            <input type="number" id="nor" step="0.01" inputmode="decimal" placeholder="e.g. 0.1">
             <div class="error-message" id="err-nor">Please fill in this value.</div>
 
             <label>Dopamine/Dobutamine (microgram/kg/min):</label>
-            <input type="number" id="dop" step="0.1" placeholder="e.g. 2.0">
+            <input type="number" id="dop" step="0.1" inputmode="decimal" placeholder="e.g. 2.0">
             <div class="error-message" id="err-dop">Please fill in this value.</div>
         </div>
 
@@ -280,11 +280,11 @@
             <label>9. Respiratory Parameters:</label>
             
             <label>SpO2 (%):</label>
-            <input type="number" id="sp02" step="1" placeholder="e.g. 96">
+            <input type="number" id="sp02" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 96">
             <div class="error-message" id="err-sp02">Please fill in this value.</div>
 
             <label>Respiratory Rate (breaths/min):</label>
-            <input type="number" id="rr" step="1" placeholder="e.g. 18">
+            <input type="number" id="rr" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 18">
             <div class="error-message" id="err-rr">Please fill in this value.</div>
         </div>
 
@@ -332,11 +332,11 @@
             <label>11. Laboratory Values:</label>
             
             <label>Hemoglobin (mg/dl):</label>
-            <input type="number" id="hb" step="0.1" placeholder="e.g. 11.5">
+            <input type="number" id="hb" step="0.1" inputmode="decimal" placeholder="e.g. 11.5">
             <div class="error-message" id="err-hb">Please fill in this value.</div>
 
             <label>Potassium (mmol/L):</label>
-            <input type="number" id="k" step="0.1" placeholder="e.g. 4.0">
+            <input type="number" id="k" step="0.1" inputmode="decimal" placeholder="e.g. 4.0">
             <div class="error-message" id="err-k">Please fill in this value.</div>
         </div>
 
