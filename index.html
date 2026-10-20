@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
-    <title>Early Mobilization Patient Evaluation</title>
+    <title>EarlyMob Clinical - Early Mobilization Patient Evaluation</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -176,7 +176,7 @@
 <body>
 
 <div class="container">
-    <h1>Physician Referral Criteria for Early Mobilization</h1>
+    <h1>EarlyMob Clinical</h1>
     <p>Answer the questions below about your patient:</p>
 
     <form id="evaluationForm">
@@ -282,6 +282,10 @@
             <label>SpO2 (%):</label>
             <input type="number" id="sp02" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 96">
             <div class="error-message" id="err-sp02">Please fill in this value.</div>
+
+            <label>FiO2 (%):</label>
+            <input type="number" id="fi02" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 40">
+            <div class="error-message" id="err-fi02">Please fill in this value.</div>
 
             <label>Respiratory Rate (breaths/min):</label>
             <input type="number" id="rr" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 18">
@@ -426,7 +430,7 @@
             }
         }
 
-        // Check numerical inputs
+        // Check numerical inputs (including fi02)
         const numberInputs = [
             { id: 'hr', group: 'group-c8' },
             { id: 'sbp', group: 'group-c8' },
@@ -434,6 +438,7 @@
             { id: 'nor', group: 'group-c8' },
             { id: 'dop', group: 'group-c8' },
             { id: 'sp02', group: 'group-c9' },
+            { id: 'fi02', group: 'group-c9' },
             { id: 'rr', group: 'group-c9' },
             { id: 'hb', group: 'group-c11' },
             { id: 'k', group: 'group-c11' }
@@ -476,8 +481,9 @@
         let c8 = (hr < 60 || hr > 130 || sbp <= 90 || map < 60 || map > 100 || nor >= 0.25 || dop >= 5) ? 1 : 0;
 
         let sp02 = parseFloat(document.getElementById('sp02').value);
+        let fi02 = parseFloat(document.getElementById('fi02').value);
         let rr = parseFloat(document.getElementById('rr').value);
-        let c9 = (sp02 < 90 || rr >= 30) ? 1 : 0;
+        let c9 = (sp02 < 90 || rr >= 30 || fi02 > 60) ? 1 : 0;
 
         let c10 = (
             selections["c10_pedal"] === 1 ||
@@ -513,6 +519,7 @@
         if (c9) {
             let subReasons = [];
             if (sp02 < 90) subReasons.push(`SpO2: ${sp02}% (cut-off: >90%)`);
+            if (fi02 > 60) subReasons.push(`FiO2: ${fi02}% (cut-off: &le; 60%)`);
             if (rr >= 30) subReasons.push(`Respiratory Rate: ${rr} breaths/min (cut-off: <30)`);
             reasons.push(`<li><b>CRITERION 9 Respiratory parameters out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
         }
