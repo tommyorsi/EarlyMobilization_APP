@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+
+<link rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./favicon-32.png">
+
+<link rel="apple-touch-icon"
+      sizes="512x512"
+      href="./icon-512.png">
+
+<meta name="theme-color" content="#0056b3">
+    <title>EarlyMob Clinical - Valutazione del paziente per la mobilizzazione precoce</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .criterion-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #fafafa;
+            border-left: 4px solid #0056b3;
+            border-radius: 4px;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+        .criterion-group.error-highlight {
+            border-left-color: #dc3545;
+            background-color: #fff8f8;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        /* Completely remove up/down spin arrows for all browsers */
+        input[type="number"] {
+            -webkit-appearance: textfield;
+            -moz-appearance: textfield;
+            appearance: textfield;
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"].error-input {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 2px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .sub-question {
+            margin-left: 15px;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #ddd;
+        }
+        .sub-item {
+            margin-bottom: 12px;
+        }
+        /* Choice Button Styles */
+        .choice-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+        .choice-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            color: #333;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .choice-btn:hover {
+            border-color: #0056b3;
+        }
+        .choice-btn.selected {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            flex: 2;
+            background-color: #28a745;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            flex: 1;
+            background-color: #6c757d;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        #result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 6px;
+            display: none;
+        }
+        .contraindicated {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .cleared {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        ul {
+            margin: 10px 0 0 20px;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+
+        .language-switcher{display:flex;justify-content:flex-end;gap:6px;margin-bottom:14px}
+        .language-switcher button{border:1px solid #cbd5e1;background:#fff;color:#334155;padding:6px 11px;border-radius:5px;font-weight:bold;cursor:pointer}
+        .language-switcher button.active{background:#0056b3;color:#fff;border-color:#0056b3}
+        .language-switcher button:focus-visible{outline:2px solid #0056b3;outline-offset:2px}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="language-switcher" role="group" aria-label="Selezione lingua">
+        <button type="button" id="lang-it" class="active" onclick="setLanguage('it')" aria-pressed="true">IT</button>
+        <button type="button" id="lang-en" onclick="setLanguage('en')" aria-pressed="false">EN</button>
+    </div>
+    <h1>EarlyMob Clinical</h1>
+    <p>Answer the questions below about your patient:</p>
+
+    <form id="evaluationForm">
+        <!-- Criterion 1 -->
+        <div class="criterion-group" id="group-c1">
+            <label>1. Is he/she alert, conscious and obeying commands?</label>
+            <div class="choice-group" data-name="c1">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c1')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c1')">NO</button>
+            </div>
+            <div class="error-message" id="err-c1">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 2 -->
+        <div class="criterion-group" id="group-c2">
+            <label>2. Did he/she have hypoglycemic episode and/or diabetic ketoacidosis in the last 12 hours?</label>
+            <div class="choice-group" data-name="c2">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c2')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c2')">NO</button>
+            </div>
+            <div class="error-message" id="err-c2">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 3 -->
+        <div class="criterion-group" id="group-c3">
+            <label>3. Did he/she have signs of decompensated pulmonary edema in the last 24 hours?</label>
+            <div class="choice-group" data-name="c3">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c3')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c3')">NO</button>
+            </div>
+            <div class="error-message" id="err-c3">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 4 -->
+        <div class="criterion-group" id="group-c4">
+            <label>4. Did he/she have unstable and/or uncontrolled arrhythmias (atrial flutter/atrial fibrillation/ventricular tachycardia) in the last 24 hours?</label>
+            <div class="choice-group" data-name="c4">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c4')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c4')">NO</button>
+            </div>
+            <div class="error-message" id="err-c4">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 5 -->
+        <div class="criterion-group" id="group-c5">
+            <label>5. Did he/she have on-going ischemia in the last 24 hours?</label>
+            <div class="choice-group" data-name="c5">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c5')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c5')">NO</button>
+            </div>
+            <div class="error-message" id="err-c5">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 6 -->
+        <div class="criterion-group" id="group-c6">
+            <label>6. Did he/she have new onset of angina in the last 12 hours?</label>
+            <div class="choice-group" data-name="c6">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c6')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c6')">NO</button>
+            </div>
+            <div class="error-message" id="err-c6">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 7 -->
+        <div class="criterion-group" id="group-c7">
+            <label>7. Does he/she have persistent symptomatic postural hypotension?</label>
+            <div class="choice-group" data-name="c7">
+                <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c7')">YES</button>
+                <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c7')">NO</button>
+            </div>
+            <div class="error-message" id="err-c7">Please select an option.</div>
+        </div>
+
+        <!-- Criterion 8 -->
+        <div class="criterion-group" id="group-c8">
+            <label>8. Hemodynamic Vitals & Medications:</label>
+            
+            <label>Resting Heart Rate (bpm):</label>
+            <input type="number" id="hr" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 75">
+            <div class="error-message" id="err-hr">Please fill in this value.</div>
+
+            <label>Systolic Blood Pressure (mmHg):</label>
+            <input type="number" id="sbp" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 120">
+            <div class="error-message" id="err-sbp">Please fill in this value.</div>
+
+            <label>Mean Arterial Pressure (mmHg):</label>
+            <input type="number" id="map" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 85">
+            <div class="error-message" id="err-map">Please fill in this value.</div>
+
+            <label>Noradrenaline (microgram/kg/min):</label>
+            <input type="number" id="nor" step="0.01" inputmode="decimal" placeholder="e.g. 0.1">
+            <div class="error-message" id="err-nor">Please fill in this value.</div>
+
+            <label>Dopamine/Dobutamine (microgram/kg/min):</label>
+            <input type="number" id="dop" step="0.1" inputmode="decimal" placeholder="e.g. 2.0">
+            <div class="error-message" id="err-dop">Please fill in this value.</div>
+        </div>
+
+        <!-- Criterion 9 -->
+        <div class="criterion-group" id="group-c9">
+            <label>9. Respiratory Parameters:</label>
+            
+            <label>SpO2 (%):</label>
+            <input type="number" id="sp02" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 96">
+            <div class="error-message" id="err-sp02">Please fill in this value.</div>
+
+            <label>FiO2 (%):</label>
+            <input type="number" id="fi02" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 40">
+            <div class="error-message" id="err-fi02">Please fill in this value.</div>
+
+            <label>Respiratory Rate (breaths/min):</label>
+            <input type="number" id="rr" step="1" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 18">
+            <div class="error-message" id="err-rr">Please fill in this value.</div>
+        </div>
+
+        <!-- Criterion 10 -->
+        <div class="criterion-group" id="group-c10">
+            <label>10. Fluid Overload Signs (Last 24 Hours):</label>
+            <div class="sub-question">
+                <div class="sub-item">
+                    <label>Increased pedal edema?</label>
+                    <div class="choice-group" data-name="c10_pedal">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_pedal')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_pedal')">NO</button>
+                    </div>
+                    <div class="error-message" id="err-c10_pedal">Please select an option.</div>
+                </div>
+                <div class="sub-item">
+                    <label>Increased jugular venous pressure (JVP)?</label>
+                    <div class="choice-group" data-name="c10_jvp">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_jvp')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_jvp')">NO</button>
+                    </div>
+                    <div class="error-message" id="err-c10_jvp">Please select an option.</div>
+                </div>
+                <div class="sub-item">
+                    <label>Weight gain of >1.8 kg?</label>
+                    <div class="choice-group" data-name="c10_weight">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_weight')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_weight')">NO</button>
+                    </div>
+                    <div class="error-message" id="err-c10_weight">Please select an option.</div>
+                </div>
+                <div class="sub-item">
+                    <label>Increased abdominal distension?</label>
+                    <div class="choice-group" data-name="c10_abd">
+                        <button type="button" class="choice-btn" data-value="1" onclick="selectChoice(this, 'c10_abd')">YES</button>
+                        <button type="button" class="choice-btn" data-value="0" onclick="selectChoice(this, 'c10_abd')">NO</button>
+                    </div>
+                    <div class="error-message" id="err-c10_abd">Please select an option.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Criterion 11 -->
+        <div class="criterion-group" id="group-c11">
+            <label>11. Laboratory Values:</label>
+            
+            <label>Hemoglobin (mg/dl):</label>
+            <input type="number" id="hb" step="0.1" inputmode="decimal" placeholder="e.g. 11.5">
+            <div class="error-message" id="err-hb">Please fill in this value.</div>
+
+            <label>Potassium (mmol/L):</label>
+            <input type="number" id="k" step="0.1" inputmode="decimal" placeholder="e.g. 4.0">
+            <div class="error-message" id="err-k">Please fill in this value.</div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn-primary" onclick="evaluatePatient()">Evaluate Patient</button>
+            <button type="button" class="btn-secondary" onclick="resetEvaluation()">New Evaluation</button>
+        </div>
+    </form>
+
+    <div id="result-box">
+        <h3 id="result-title" style="margin-top:0;"></h3>
+        <div id="result-content"></div>
+    </div>
+</div>
+
+<script>
+
+    const UI_TRANSLATIONS = {"Answer the questions below about your patient:": "Rispondi alle seguenti domande relative al paziente:", "1. Is he/she alert, conscious and obeying commands?": "1. Il/La paziente è vigile, cosciente e in grado di eseguire comandi?", "2. Did he/she have hypoglycemic episode and/or diabetic ketoacidosis in the last 12 hours?": "2. Il/La paziente ha avuto un episodio di ipoglicemia e/o chetoacidosi diabetica nelle ultime 12 ore?", "3. Did he/she have signs of decompensated pulmonary edema in the last 24 hours?": "3. Il/La paziente ha manifestato segni di edema polmonare scompensato nelle ultime 24 ore?", "4. Did he/she have unstable and/or uncontrolled arrhythmias (atrial flutter/atrial fibrillation/ventricular tachycardia) in the last 24 hours?": "4. Il/La paziente ha presentato aritmie instabili e/o non controllate (flutter atriale/fibrillazione atriale/tachicardia ventricolare) nelle ultime 24 ore?", "5. Did he/she have on-going ischemia in the last 24 hours?": "5. Il/La paziente ha presentato ischemia in corso nelle ultime 24 ore?", "6. Did he/she have new onset of angina in the last 12 hours?": "6. Il/La paziente ha manifestato un nuovo episodio di angina nelle ultime 12 ore?", "7. Does he/she have persistent symptomatic postural hypotension?": "7. Il/La paziente presenta ipotensione posturale sintomatica persistente?", "8. Hemodynamic Vitals & Medications:": "8. Parametri emodinamici e farmaci:", "Resting Heart Rate (bpm):": "Frequenza cardiaca a riposo (bpm):", "Systolic Blood Pressure (mmHg):": "Pressione arteriosa sistolica (mmHg):", "Mean Arterial Pressure (mmHg):": "Pressione arteriosa media (mmHg):", "Noradrenaline (microgram/kg/min):": "Noradrenalina (microgrammi/kg/min):", "Dopamine/Dobutamine (microgram/kg/min):": "Dopamina/Dobutamina (microgrammi/kg/min):", "9. Respiratory Parameters:": "9. Parametri respiratori:", "SpO2 (%):": "SpO₂ (%):", "FiO2 (%):": "FiO₂ (%):", "Respiratory Rate (breaths/min):": "Frequenza respiratoria (atti/min):", "10. Fluid Overload Signs (Last 24 Hours):": "10. Segni di sovraccarico di liquidi (ultime 24 ore):", "Increased pedal edema?": "Aumento dell'edema declive?", "Increased jugular venous pressure (JVP)?": "Aumento della pressione venosa giugulare (PVG)?", "Weight gain of >1.8 kg?": "Aumento di peso superiore a 1,8 kg?", "Increased abdominal distension?": "Aumento della distensione addominale?", "11. Laboratory Values:": "11. Valori di laboratorio:", "Hemoglobin (mg/dl):": "Emoglobina (mg/dl):", "Potassium (mmol/L):": "Potassio (mmol/L):", "Evaluate Patient": "Valuta paziente", "New Evaluation": "Nuova valutazione", "Please select an option.": "Seleziona un'opzione.", "Please fill in this value.": "Inserisci questo valore.", "YES": "SÌ", "NO": "NO", "CONTRAINDICATIONS: You can't proceed to Early Mobilization": "CONTROINDICAZIONI: non è possibile procedere con la mobilizzazione precoce", "All criteria passed! Patient is cleared for Early Mobilization.": "Tutti i criteri sono soddisfatti! Il/La paziente è idoneo/a alla mobilizzazione precoce.", "Reason(s):": "Motivi:", "Patient is not alert/conscious/obeying commands (selected NO, correct answer YES)": "Il/La paziente non è vigile/cosciente/non esegue i comandi (è stata selezionata la risposta NO, mentre la risposta corretta è SÌ)", "Hypoglycemic episode and/or DKA in the last 12 hours": "Episodio di ipoglicemia e/o chetoacidosi diabetica nelle ultime 12 ore", "Signs of decompensated pulmonary edema in the last 24 hours": "Segni di edema polmonare scompensato nelle ultime 24 ore", "Unstable/uncontrolled arrhythmias in the last 24 hours": "Aritmie instabili/non controllate nelle ultime 24 ore", "On-going ischemia in the last 24 hours": "Ischemia in corso nelle ultime 24 ore", "New onset of angina in the last 12 hours": "Nuovo episodio di angina nelle ultime 12 ore", "Persistent symptomatic postural hypotension": "Ipotensione posturale sintomatica persistente", "Vitals out of range": "Parametri emodinamici fuori intervallo", "Respiratory parameters out of range": "Parametri respiratori fuori intervallo", "Signs of fluid overload detected": "Rilevati segni di sovraccarico di liquidi", "Lab values out of range": "Valori di laboratorio fuori intervallo", "Resting Heart Rate": "Frequenza cardiaca a riposo", "Systolic Blood Pressure": "Pressione arteriosa sistolica", "Mean Arterial Pressure": "Pressione arteriosa media", "Noradrenaline": "Noradrenalina", "Dopamine/Dobutamine": "Dopamina/Dobutamina", "Respiratory Rate": "Frequenza respiratoria", "Hemoglobin": "Emoglobina", "Potassium": "Potassio", "cut-off": "soglia", "breaths/min": "atti/min", "CRITERION 1:": "CRITERIO 1:", "CRITERION 2:": "CRITERIO 2:", "CRITERION 3:": "CRITERIO 3:", "CRITERION 4:": "CRITERIO 4:", "CRITERION 5:": "CRITERIO 5:", "CRITERION 6:": "CRITERIO 6:", "CRITERION 7:": "CRITERIO 7:", "CRITERION 8 Vitals out of range:": "CRITERIO 8 - Parametri emodinamici fuori intervallo:", "CRITERION 9 Respiratory parameters out of range:": "CRITERIO 9 - Parametri respiratori fuori intervallo:", "CRITERION 10:": "CRITERIO 10:", "CRITERION 11 Lab values out of range:": "CRITERIO 11 - Valori di laboratorio fuori intervallo:"};
+    let currentLanguage = 'it';
+
+    function translateText(value, language) {
+        const reverse = Object.fromEntries(Object.entries(UI_TRANSLATIONS).map(([en,it]) => [it,en]));
+        let result = value;
+        // Translate longer expressions first, so generic words such as YES/NO
+        // cannot alter a complete sentence before its specific translation runs.
+        const entries = (language === 'it' ? Object.entries(UI_TRANSLATIONS) : Object.entries(reverse))
+            .sort((a, b) => b[0].length - a[0].length);
+        for (const [from,to] of entries) result = result.replaceAll(from,to);
+        return result;
+    }
+
+    function setLanguage(language) {
+        currentLanguage = language === 'en' ? 'en' : 'it';
+        const walker = document.createTreeWalker(document.querySelector('.container'), NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (node.nodeValue.trim()) node.nodeValue = translateText(node.nodeValue,currentLanguage);
+        }
+        const placeholders = {
+            hr:['e.g. 75','es. 75'],sbp:['e.g. 120','es. 120'],map:['e.g. 85','es. 85'],
+            nor:['e.g. 0.1','es. 0,1'],dop:['e.g. 2.0','es. 2,0'],sp02:['e.g. 96','es. 96'],
+            fi02:['e.g. 40','es. 40'],rr:['e.g. 18','es. 18'],hb:['e.g. 11.5','es. 11,5'],k:['e.g. 4.0','es. 4,0']
+        };
+        Object.entries(placeholders).forEach(([id,v]) => {
+            const el=document.getElementById(id); if(el) el.placeholder=currentLanguage==='it'?v[1]:v[0];
+        });
+        const title=document.getElementById('result-title'), content=document.getElementById('result-content');
+        if(title && title.textContent) title.textContent=translateText(title.textContent,currentLanguage);
+        if(content && content.innerHTML) content.innerHTML=translateText(content.innerHTML,currentLanguage);
+        document.documentElement.lang=currentLanguage;
+        document.title=currentLanguage==='it'
+            ? 'EarlyMob Clinical - Valutazione del paziente per la mobilizzazione precoce'
+            : 'EarlyMob Clinical - Early Mobilization Patient Evaluation';
+        document.querySelector('.language-switcher').setAttribute('aria-label',currentLanguage==='it'?'Selezione lingua':'Language selection');
+        document.getElementById('lang-it').classList.toggle('active',currentLanguage==='it');
+        document.getElementById('lang-en').classList.toggle('active',currentLanguage==='en');
+        document.getElementById('lang-it').setAttribute('aria-pressed',String(currentLanguage==='it'));
+        document.getElementById('lang-en').setAttribute('aria-pressed',String(currentLanguage==='en'));
+        try { localStorage.setItem('earlymob-language',currentLanguage); } catch(error) {}
+    }
+
+    let selections = {};
+
+    // Disable mouse scroll wheel from changing number input values
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('wheel', function(event) {
+            event.preventDefault();
+        }, { passive: false });
+
+        // Clear error styling and message when text inputs change
+        input.addEventListener('input', function() {
+            if (this.value.trim() !== "") {
+                this.classList.remove('error-input');
+                const errEl = document.getElementById(`err-${this.id}`);
+                if (errEl) errEl.style.display = 'none';
+
+                // Check if all inputs inside parent group are filled to clear group highlight
+                const parentGroup = this.closest('.criterion-group');
+                if (parentGroup) {
+                    const inputsInGroup = parentGroup.querySelectorAll('input[type="number"]');
+                    let allFilled = true;
+                    inputsInGroup.forEach(inp => {
+                        if (!inp.value.trim()) allFilled = false;
+                    });
+                    if (allFilled) parentGroup.classList.remove('error-highlight');
+                }
+            }
+        });
+    });
+
+    function selectChoice(button, groupName) {
+        const groupContainer = button.parentElement;
+        const buttons = groupContainer.querySelectorAll('.choice-btn');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+
+        button.classList.add('selected');
+        selections[groupName] = parseInt(button.getAttribute('data-value'));
+
+        // Remove error styling and message for this choice group
+        const parentGroup = groupContainer.closest('.criterion-group');
+        if (parentGroup) {
+            parentGroup.classList.remove('error-highlight');
+        }
+        const errEl = document.getElementById(`err-${groupName}`);
+        if (errEl) {
+            errEl.style.display = 'none';
+        }
+    }
+
+    function evaluatePatient() {
+        // Clear all previous errors
+        document.querySelectorAll('.error-highlight').forEach(el => el.classList.remove('error-highlight'));
+        document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+
+        const choiceGroups = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c10_pedal', 'c10_jvp', 'c10_weight', 'c10_abd'];
+        let firstMissingElement = null;
+
+        // Check choice groups
+        for (let group of choiceGroups) {
+            if (selections[group] === undefined) {
+                let btnGroup = document.querySelector(`.choice-group[data-name="${group}"]`);
+                if (btnGroup) {
+                    let parentGroup = btnGroup.closest('.criterion-group');
+                    parentGroup.classList.add('error-highlight');
+                    
+                    let errEl = document.getElementById(`err-${group}`);
+                    if (errEl) errEl.style.display = 'block';
+
+                    if (!firstMissingElement) firstMissingElement = parentGroup;
+                }
+            }
+        }
+
+        // Check numerical inputs (including fi02)
+        const numberInputs = [
+            { id: 'hr', group: 'group-c8' },
+            { id: 'sbp', group: 'group-c8' },
+            { id: 'map', group: 'group-c8' },
+            { id: 'nor', group: 'group-c8' },
+            { id: 'dop', group: 'group-c8' },
+            { id: 'sp02', group: 'group-c9' },
+            { id: 'fi02', group: 'group-c9' },
+            { id: 'rr', group: 'group-c9' },
+            { id: 'hb', group: 'group-c11' },
+            { id: 'k', group: 'group-c11' }
+        ];
+
+        for (let item of numberInputs) {
+            let inputEl = document.getElementById(item.id);
+            if (!inputEl.value.trim()) {
+                inputEl.classList.add('error-input');
+                let parentGroup = document.getElementById(item.group);
+                parentGroup.classList.add('error-highlight');
+
+                let errEl = document.getElementById(`err-${item.id}`);
+                if (errEl) errEl.style.display = 'block';
+
+                if (!firstMissingElement) firstMissingElement = parentGroup;
+            }
+        }
+
+        // If any data is missing, scroll smoothly to the first missing element
+        if (firstMissingElement) {
+            firstMissingElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        let c1 = selections["c1"] === 0 ? 1 : 0;
+        let c2 = selections["c2"];
+        let c3 = selections["c3"];
+        let c4 = selections["c4"];
+        let c5 = selections["c5"];
+        let c6 = selections["c6"];
+        let c7 = selections["c7"];
+
+        let hr = parseFloat(document.getElementById('hr').value);
+        let sbp = parseFloat(document.getElementById('sbp').value);
+        let map = parseFloat(document.getElementById('map').value);
+        let nor = parseFloat(document.getElementById('nor').value);
+        let dop = parseFloat(document.getElementById('dop').value);
+
+        let c8 = (hr < 60 || hr > 130 || sbp <= 90 || map < 60 || map > 100 || nor >= 0.25 || dop >= 5) ? 1 : 0;
+
+        let sp02 = parseFloat(document.getElementById('sp02').value);
+        let fi02 = parseFloat(document.getElementById('fi02').value);
+        let rr = parseFloat(document.getElementById('rr').value);
+        let c9 = (sp02 < 90 || rr >= 30 || fi02 > 60) ? 1 : 0;
+
+        let c10 = (
+            selections["c10_pedal"] === 1 ||
+            selections["c10_jvp"] === 1 ||
+            selections["c10_weight"] === 1 ||
+            selections["c10_abd"] === 1
+        ) ? 1 : 0;
+
+        let hb = parseFloat(document.getElementById('hb').value);
+        let k = parseFloat(document.getElementById('k').value);
+        let c11 = (hb <= 7 || k < 3.5 || k > 5.5) ? 1 : 0;
+
+        let reasons = [];
+
+        if (c1) reasons.push("<li><b>CRITERION 1:</b> Patient is not alert/conscious/obeying commands (selected NO, correct answer YES)</li>");
+        if (c2) reasons.push("<li><b>CRITERION 2:</b> Hypoglycemic episode and/or DKA in the last 12 hours</li>");
+        if (c3) reasons.push("<li><b>CRITERION 3:</b> Signs of decompensated pulmonary edema in the last 24 hours</li>");
+        if (c4) reasons.push("<li><b>CRITERION 4:</b> Unstable/uncontrolled arrhythmias in the last 24 hours</li>");
+        if (c5) reasons.push("<li><b>CRITERION 5:</b> On-going ischemia in the last 24 hours</li>");
+        if (c6) reasons.push("<li><b>CRITERION 6:</b> New onset of angina in the last 12 hours</li>");
+        if (c7) reasons.push("<li><b>CRITERION 7:</b> Persistent symptomatic postural hypotension</li>");
+
+        if (c8) {
+            let subReasons = [];
+            if (hr < 60 || hr > 130) subReasons.push(`Resting Heart Rate: ${hr} bpm (cut-off: 60-130 bpm)`);
+            if (sbp <= 90) subReasons.push(`Systolic Blood Pressure: ${sbp} mmHg (cut-off: >90 mmHg)`);
+            if (map < 60 || map > 100) subReasons.push(`Mean Arterial Pressure: ${map} mmHg (cut-off: 60-100 mmHg)`);
+            if (nor >= 0.25) subReasons.push(`Noradrenaline: ${nor.toFixed(2)} microgram/kg/min (cut-off: <0.25)`);
+            if (dop >= 5) subReasons.push(`Dopamine/Dobutamine: ${dop.toFixed(2)} microgram/kg/min (cut-off: <5)`);
+            reasons.push(`<li><b>CRITERION 8 Vitals out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        if (c9) {
+            let subReasons = [];
+            if (sp02 < 90) subReasons.push(`SpO2: ${sp02}% (cut-off: >90%)`);
+            if (fi02 > 60) subReasons.push(`FiO2: ${fi02}% (cut-off: &le; 60%)`);
+            if (rr >= 30) subReasons.push(`Respiratory Rate: ${rr} breaths/min (cut-off: <30)`);
+            reasons.push(`<li><b>CRITERION 9 Respiratory parameters out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        if (c10) reasons.push("<li><b>CRITERION 10:</b> Signs of fluid overload detected</li>");
+
+        if (c11) {
+            let subReasons = [];
+            if (hb <= 7) subReasons.push(`Hemoglobin: ${hb.toFixed(2)} mg/dl (cut-off: >7 mg/dl)`);
+            if (k < 3.5 || k > 5.5) subReasons.push(`Potassium: ${k.toFixed(2)} mmol/L (cut-off: 3.5-5.5 mmol/L)`);
+            reasons.push(`<li><b>CRITERION 11 Lab values out of range:</b><ul>` + subReasons.map(r => `<li>${r}</li>`).join('') + `</ul></li>`);
+        }
+
+        const resultBox = document.getElementById('result-box');
+        const resultTitle = document.getElementById('result-title');
+        const resultContent = document.getElementById('result-content');
+
+        resultBox.style.display = "block";
+
+        if (c1 || c2 || c3 || c4 || c5 || c6 || c7 || c8 || c9 || c10 || c11) {
+            resultBox.className = "contraindicated";
+            resultTitle.textContent = "CONTRAINDICATIONS: You can't proceed to Early Mobilization";
+            resultContent.innerHTML = "<p><strong>Reason(s):</strong></p><ul>" + reasons.join('') + "</ul>";
+        } else {
+            resultBox.className = "cleared";
+            resultTitle.textContent = "All criteria passed! Patient is cleared for Early Mobilization.";
+            resultContent.innerHTML = "";
+        }
+        
+        if (currentLanguage === 'it') {
+            resultTitle.textContent = translateText(resultTitle.textContent, 'it');
+            resultContent.innerHTML = translateText(resultContent.innerHTML, 'it');
+        }
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetEvaluation() {
+        // Clear all button selections
+        document.querySelectorAll('.choice-btn').forEach(btn => btn.classList.remove('selected'));
+        // Clear all input fields
+        document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+        // Clear global selections object
+        for (let key in selections) {
+            delete selections[key];
+        }
+        // Remove error classes and hide error messages
+        document.querySelectorAll('.error-highlight').forEach(el => el.classList.remove('error-highlight'));
+        document.querySelectorAll('.error-input').forEach(el => el.classList.remove('error-input'));
+        document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+        // Hide result box
+        document.getElementById('result-box').style.display = 'none';
+        // Scroll back to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    let initialLanguage = 'it';
+    try {
+        const savedLanguage = localStorage.getItem('earlymob-language');
+        if (savedLanguage === 'it' || savedLanguage === 'en') initialLanguage = savedLanguage;
+    } catch (error) {}
+    setLanguage(initialLanguage);
+</script>
+
+</body>
+</html>
